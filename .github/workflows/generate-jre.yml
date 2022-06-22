@@ -21,20 +21,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            name/app
-          tags: |
-            type=sha
+      # - name: Docker meta
+      #   id: meta
+      #   uses: docker/metadata-action@v4
+      #   with:
+      #     images: |
+      #       name/app
+      #     tags: |
+      #       type=sha
+      - name: Set docker tag
+        run: echo '::set-output name=TAG::$(date +%s)'
+        id: tag-gen
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/jre11:${{ sha }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/jre11:${{ steps.tag-gen.outputs.TAG }}
 
         

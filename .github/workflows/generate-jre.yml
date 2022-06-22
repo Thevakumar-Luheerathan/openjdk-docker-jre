@@ -30,7 +30,7 @@ jobs:
       #     tags: |
       #       type=sha
       - name: Set docker tag
-        run: echo '::set-output name=TAG::$(date +%s)'
+        run: echo ::set-output name=TAG::$(date +%s)
         id: tag-gen
 
       - name: Build and push

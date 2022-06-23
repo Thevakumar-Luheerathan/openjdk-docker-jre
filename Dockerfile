@@ -51,8 +51,10 @@ RUN apk add --no-cache tzdata --virtual .build-deps curl binutils zstd \
     && mkdir /tmp/libz \
     && tar -xf /tmp/libz.tar.xz -C /tmp/libz \
     && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
-    && apk del --purge .build-deps glibc-i18n \
+    && apk del --purge .build-deps glibc-i18n  \
     && rm -rf /tmp/*.apk /tmp/gcc /tmp/gcc-libs.tar* /tmp/libz /tmp/libz.tar.xz /var/cache/apk/*
+
+    
 
 ENV JAVA_VERSION jdk-11.0.15+10
 
@@ -76,7 +78,8 @@ RUN set -eux; \
     tar -xf /tmp/openjdk.tar.gz --strip-components=1; \
     apk del --purge .fetch-deps; \
     rm -rf /var/cache/apk/*; \
-    rm -rf /tmp/openjdk.tar.gz;
+    rm -rf /tmp/openjdk.tar.gz;\
+    apk del --purge curl binutils zstd;
 
 ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH"

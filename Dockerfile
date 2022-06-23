@@ -21,7 +21,7 @@ FROM alpine:3.14
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
-RUN apk add --no-cache tzdata --virtual .build-deps curl binutils zstd \
+RUN apk add --no-cache tzdata libretls musl-locales musl-locales-lang zlib --virtual .build-deps curl binutils zstd \
     && GLIBC_VER="2.33-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
     && GCC_LIBS_URL="https://archive.archlinux.org/packages/g/gcc-libs/gcc-libs-10.1.0-2-x86_64.pkg.tar.zst" \
@@ -57,6 +57,7 @@ RUN apk add --no-cache tzdata --virtual .build-deps curl binutils zstd \
 ENV JAVA_VERSION jdk-11.0.15+10
 
 RUN set -eux; \
+    apk add --no-cache --virtual .fetch-deps curl; \
     ARCH="$(apk --print-arch)"; \
     case "${ARCH}" in \
        amd64|x86_64) \
@@ -68,20 +69,15 @@ RUN set -eux; \
          exit 1; \
          ;; \
     esac; \
-	  wget -O /tmp/openjdk.tar.gz ${BINARY_URL}; \
-	  echo "${ESUM} */tmp/openjdk.tar.gz" | sha256sum -c -; \
-	  mkdir -p /opt/java/openjdk; \
-	  tar --extract \
-	      --file /tmp/openjdk.tar.gz \
-	      --directory /opt/java/openjdk \
-	      --strip-components 1 \
-	      --no-same-owner \
-	  ; \
+    curl -LfsSo /tmp/openjdk.tar.gz ${BINARY_URL}; \
+    echo "${ESUM} */tmp/openjdk.tar.gz" | sha256sum -c -; \
+    mkdir -p /opt/java/openjdk; \
+    cd /opt/java/openjdk; \
+    tar -xf /tmp/openjdk.tar.gz --strip-components=1; \
+    apk del --purge .fetch-deps; \
+    rm -rf /var/cache/apk/*; \
     rm -rf /tmp/openjdk.tar.gz;
 
 ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH"
-
-RUN echo Verifying install ... \
-    && echo java --version && java --version \
-    && echo Complete.
+CMD ["jshell"]

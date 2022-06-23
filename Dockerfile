@@ -78,8 +78,8 @@ RUN set -eux; \
     tar -xf /tmp/openjdk.tar.gz --strip-components=1; \
     apk del --purge .fetch-deps; \
     rm -rf /var/cache/apk/*; \
-    rm -rf /tmp/openjdk.tar.gz;\
-    apk del --purge curl binutils zstd;
+    rm -rf /tmp/openjdk.tar.gz;
+    
 
 ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH"

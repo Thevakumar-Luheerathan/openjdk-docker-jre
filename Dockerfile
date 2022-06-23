@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-FROM alpine:3.14
+FROM alpine:3.14.3
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
@@ -79,6 +79,8 @@ RUN set -eux; \
     apk del --purge .fetch-deps; \
     rm -rf /var/cache/apk/*; \
     rm -rf /tmp/openjdk.tar.gz;
+
+
     
 
 ENV JAVA_HOME=/opt/java/openjdk \

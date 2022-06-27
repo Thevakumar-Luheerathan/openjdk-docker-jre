@@ -45,8 +45,6 @@ jobs:
             last_tag="v1.2.3"
           fi  
           echo $last_tag
-          last_tag=${last_tag:1}
-          echo $last_tag
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
           echo ${last_tag_array}
           major=${last_tag_array[2]}

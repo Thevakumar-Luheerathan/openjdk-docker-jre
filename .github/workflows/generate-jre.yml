@@ -44,7 +44,7 @@ jobs:
           if [ $last_tag == null ]; then
             last_tag="v0.0.0"
           fi
-          if [ "$last_tag" = "v1" ]; then
+          if [ `expr length "$last_tag"` -lt 6  ]; then
             last_tag="v0.0.0"
           fi  
           echo $last_tag

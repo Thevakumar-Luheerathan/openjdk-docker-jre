@@ -51,9 +51,9 @@ jobs:
           echo ${last_tag_array[1]}
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
           echo $last_tag_array
-          major=$last_tag_array[2]
-          minor=$last_tag_array[4]
-          patch=$last_tag_array[6]
+          major=${last_tag_array[2]}
+          minor=${last_tag_array[4]}
+          patch=${last_tag_array[6]}
           if [ -z ${{ inputs.replace_prev }} ] ; then
             if [ ${{ inputs.is_minor }} = true ] ; then
               patch=$(($patch + 1))

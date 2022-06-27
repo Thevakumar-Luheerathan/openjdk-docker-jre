@@ -48,7 +48,7 @@ jobs:
           last_tag=${last_tag:1}
           echo $last_tag
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
-          echo $last_tag_array
+          echo ${last_tag_array}
           major=${last_tag_array[2]}
           minor=${last_tag_array[4]}
           patch=${last_tag_array[6]}

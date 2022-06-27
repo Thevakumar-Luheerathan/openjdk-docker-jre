@@ -49,7 +49,6 @@ jobs:
           major=$last_tag_array[2]
           minor=$last_tag_array[4]
           patch=$last_tag_array[6]
-          is_patch=$({{ inputs.is_patch }})
           if [[ -z {{ inputs.replace_prev }} ]] ; then
             if [ "is_patch" = true ] ; then
               patch=$(($patch + 1))

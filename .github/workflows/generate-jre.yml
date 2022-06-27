@@ -42,7 +42,7 @@ jobs:
         run: |
           last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/jre11/tags/' | jq '."results"[0]["name"]') 
           if [ $last_tag == null ] ; then
-            last_tag="v0.0.0"
+            last_tag="v1.2.3"
           fi  
           echo $last_tag
           last_tag=${last_tag:1}

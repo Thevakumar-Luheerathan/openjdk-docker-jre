@@ -50,7 +50,7 @@ jobs:
           minor=$last_tag_array[4]
           patch=$last_tag_array[6]
           is_patch=${{ inputs.is_minor }} 
-          if [[ -z ${{ inputs.replace_prev }} ]] ; then
+          if [ -z ${{ inputs.replace_prev }} ] ; then
             if [ "$is_patch" = true ] ; then
               patch=$(($patch + 1))
             fi
@@ -62,7 +62,7 @@ jobs:
             fi
             tag="v$major.$minor.$patch"
           else
-            tag={{ inputs.replace_prev }}
+            tag=${{ inputs.replace_prev }}
           fi
 
       - name: Set docker tag

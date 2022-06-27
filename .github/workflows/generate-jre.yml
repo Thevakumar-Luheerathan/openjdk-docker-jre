@@ -42,7 +42,8 @@ jobs:
         run: |
           sudo apt-get install jq
           last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/jre11/tags/' | jq '."results"[0]["name"]') 
-          if [[ -z last_tag ]] ; then
+          echo $last_tag
+          if [[ -z $last_tag ]] ; then
             last_tag="v0.0.0"
           fi
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 

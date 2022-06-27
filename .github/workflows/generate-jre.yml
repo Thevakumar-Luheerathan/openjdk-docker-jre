@@ -45,6 +45,7 @@ jobs:
           if [[ -z $last_tag ]] ; then
             $last_tag="v0.0.0"
           fi
+          $last_tag="v0.0.0"
           echo $last_tag
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
           major=$last_tag_array[2]

@@ -58,6 +58,9 @@ jobs:
             if [ ${{ inputs.is_major }} = true ] ; then
               major=$(($major + 1))
             fi
+            echo $patch
+            echo $minor
+            echo $major
             tag="v"
             tag+="$major."
             tag+="$minor."

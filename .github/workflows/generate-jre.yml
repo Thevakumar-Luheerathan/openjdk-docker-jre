@@ -41,7 +41,7 @@ jobs:
       - name: Generate new tag
         run: |
           last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/jre11/tags/' | jq '."results"[0]["name"]') 
-          if [ -z $last_tag ] ; then
+          if [ $last_tag == null ] ; then
             last_tag="v0.0.0"
             echo $last_tag
           fi

@@ -53,7 +53,7 @@ jobs:
             if [ "is_patch" = true ] ; then
               patch=$(($patch + 1))
             fi
-            if [ {{ inputs.is_minor }} = true ] ; then
+            if [ "{{ inputs.is_minor }}" = true ] ; then
               minor=$(($minor + 1))
             fi
             if [ {{ inputs.is_major }} == true ] ; then

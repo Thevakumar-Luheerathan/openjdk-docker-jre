@@ -54,16 +54,17 @@ jobs:
             if [ "$is_patch" = true ] ; then
               patch=$(($patch + 1))
             fi
-            if [ {{ inputs.is_minor }} = true ] ; then
+            if [ ${{ inputs.is_minor }} = true ] ; then
               minor=$(($minor + 1))
             fi
-            if [ {{ inputs.is_major }} == true ] ; then
+            if [ ${{ inputs.is_major }} = true ] ; then
               major=$(($major + 1))
             fi
             tag="v$major.$minor.$patch"
           else
             tag=${{ inputs.replace_prev }}
           fi
+          echo $tag
 
       - name: Set docker tag
         run: echo ::set-output name=TAG::$tag

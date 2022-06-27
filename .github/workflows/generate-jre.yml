@@ -51,6 +51,8 @@ jobs:
           if [ -z ${{ inputs.replace_prev }} ] ; then
             if [ ${{ inputs.is_minor }} = true ] ; then
               patch=$(($patch + 1))
+              patch1=`expr $patch + 1`
+              patch=`expr $patch + 1`
             fi
             if [ ${{ inputs.is_minor }} = true ] ; then
               minor=$(($minor + 1))
@@ -59,6 +61,7 @@ jobs:
               major=$(($major + 1))
             fi
             echo $patch
+            echo $patch1
             echo $minor
             echo $major
             tag="v"

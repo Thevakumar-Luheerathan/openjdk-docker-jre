@@ -42,10 +42,10 @@ jobs:
         run: |
           sudo apt-get install jq
           last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/jre11/tags/' | jq '."results"[0]["name"]') 
-          echo $last_tag
           if [[ -z $last_tag ]] ; then
-            last_tag="v0.0.0"
+            $last_tag="v0.0.0"
           fi
+          echo $last_tag
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
           major=$last_tag_array[2]
           minor=$last_tag_array[4]

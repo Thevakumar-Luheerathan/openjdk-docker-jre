@@ -46,7 +46,15 @@ jobs:
           fi  
           echo $last_tag
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
-          echo ${last_tag_array}
+          echo "Hello"
+          echo ${last_tag_array[0]}
+          echo ${last_tag_array[1]}
+          echo ${last_tag_array[2]}
+          echo ${last_tag_array[3]}
+          echo ${last_tag_array[4]}
+          echo ${last_tag_array[5]}
+          echo ${last_tag_array[6]}
+          echo ${last_tag_array[7]}
           major=${last_tag_array[2]}
           minor=${last_tag_array[4]}
           patch=${last_tag_array[6]}
@@ -62,10 +70,6 @@ jobs:
             if [ ${{ inputs.is_major }} = true ] ; then
               major=$(($major + 1))
             fi
-            echo $patch
-            echo $patch1
-            echo $minor
-            echo $major
             tag="v"
             tag+="$major."
             tag+="$minor."

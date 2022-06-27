@@ -50,7 +50,7 @@ jobs:
           minor=${last_tag_array[3]}
           patch=${last_tag_array[5]}
           if [ -z ${{ inputs.replace_prev }} ] ; then
-            if [ ${{ inputs.is_minor }} = true ] ; then
+            if [ ${{ inputs.is_patch }} = true ] ; then
               patch=$(($patch + 1))
               echo $patch
             fi

@@ -16,7 +16,7 @@ on:
           - patch
           - minor
           - major
-          
+
 
 jobs:
   build-jre-docker:
@@ -34,7 +34,9 @@ jobs:
       
       - name: Generate new tag
         run: |
-          do_change_all=1
+          do_change_latest=1
+          do_change_major=1
+          do_change_major_minor=1
           last_tags=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[]["name"]') ) 
           echo "last tag is ${last_tags[*]}"
           if [ -z "$last_tags" ]; then
@@ -46,10 +48,12 @@ jobs:
 
           
           if [ ${{ inputs.replace_prev }} != "$last_tag" ] && [ ${{ inputs.replace_prev }} != "" ]; then
-            do_change_all=0
+            do_change_latest=0
+            do_change_major=0
+            do_change_major_minor=0
           fi
           echo "Last tag is $last_tag"
-          echo "Update all tag is $do_change_all"
+          
           
           last_tag_array=( $(grep -Eo '[0-9]+' <<<"$last_tag") ) 
 
@@ -82,12 +86,15 @@ jobs:
           echo ::set-output name=TAG::$tag
           echo ::set-output name=MAJ_MIN_TAG::$maj_min_tag
           echo ::set-output name=MAJ_TAG::$maj_tag
-          echo ::set-output name=DO_CHANGE_ALL::$do_change_all
+          echo ::set-output name=DO_CHANGE_LATEST::$do_change_latest
+          echo ::set-output name=DO_CHANGE_MAJOR::$do_change_major
+          echo ::set-output name=DO_CHANGE_MAJOR_MINOR::$do_change_major_minor
+
           echo $tag
         id: tag-gen
         
       - name: Build and push latest image
-        if: ${{ steps.tag-gen.outputs.DO_CHANGE_ALL == 1 }}
+        if: ${{ steps.tag-gen.outputs.DO_CHANGE_LATEST == 1 }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -96,7 +103,7 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:latest
 
       - name: Build and push latest major
-        if: ${{ steps.tag-gen.outputs.DO_CHANGE_ALL == 1 }}
+        if: ${{ steps.tag-gen.outputs.DO_CHANGE_MAJOR == 1 }}
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -105,7 +112,7 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
 
       - name: Build and push latest major.minor
-        if: ${{ steps.tag-gen.outputs.DO_CHANGE_ALL == 1 }}
+        if: ${{ steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1 }}
         uses: docker/build-push-action@v2
         with:
           context: .

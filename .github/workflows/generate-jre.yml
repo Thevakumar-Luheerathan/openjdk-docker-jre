@@ -34,10 +34,10 @@ jobs:
         run: |
           last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[0]["name"]') 
           if [ $last_tag == null ]; then
-            last_tag="v0.0.0"
+            last_tag="0.0.0"
           fi
           if [ `expr length "$last_tag"` -lt 6  ]; then
-            last_tag="v0.0.0"
+            last_tag="0.0.0"
           fi  
           echo $last_tag
           last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
@@ -57,7 +57,7 @@ jobs:
               minor=0
               patch=0
             fi
-            tag="v$major.$minor.$patch"
+            tag="$major.$minor.$patch"
           else
             tag=${{ inputs.replace_prev }}
           fi

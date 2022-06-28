@@ -36,7 +36,7 @@ jobs:
           do_change_all=1
           last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[0]["name"]') 
           echo $last_tag
-          if [ $last_tag == null ] || [ -z $last_tag ]; then
+          if [ $last_tag == null ]; then
             last_tag="0.0.0"
           if [ `expr length "$last_tag"` -lt 6  ]; then
             last_tag="0.0.0"

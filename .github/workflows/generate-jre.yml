@@ -38,7 +38,7 @@ jobs:
           echo $last_tag
           if [ $last_tag == null ]; then
             last_tag="0.0.0"
-          if [ `expr length "$last_tag"` -lt 6  ]; then
+          elif [ `expr length "$last_tag"` -lt 6  ]; then
             last_tag="0.0.0"
           elif [ ${{ inputs.replace_prev }} != "$last_tag" ]; then
             do_change_all=0

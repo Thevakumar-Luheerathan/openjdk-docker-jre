@@ -12,25 +12,9 @@ on:
         description: sem-ver option to increase
         required: false
         options: 
-          - major
-          - minor
           - patch
-      is_patch:
-        description: Update patch version
-        required: false
-        default: true
-        type: boolean
-      is_minor:
-        description: Update minor version
-        required: false
-        default: false
-        type: boolean
-      is_major:
-        description: Update major version
-        required: false
-        default: false
-        type: boolean
-  
+          - minor
+          - major
 
 jobs:
   build-jre-docker:
@@ -61,24 +45,14 @@ jobs:
           minor=${last_tag_array[3]}
           patch=${last_tag_array[5]}
           if [ -z ${{ inputs.replace_prev }} ] ; then
-            echo ${{ inputs.sem-ver }}
             if [ ${{ inputs.sem-ver }} = "patch" ] ; then
-              echo "It is patch"
-            fi
-            if [ ${{ inputs.sem-ver }} = "major" ] ; then
-              echo "It is major"
-            fi
-            if [ ${{ inputs.sem-ver }} = "minor" ] ; then
-              echo "It is minor"
-            fi
-            if [ ${{ inputs.is_patch }} = true ] ; then
               patch=$(($patch + 1))
             fi
-            if [ ${{ inputs.is_minor }} = true ] ; then
+            if [ ${{ inputs.sem-ver }} = "minor" ] ; then
               minor=$(($minor + 1))
               patch=0
             fi
-            if [ ${{ inputs.is_major }} = true ] ; then
+            if [ ${{ inputs.sem-ver }} = "major" ] ; then
               major=$(($major + 1))
               minor=0
               patch=0

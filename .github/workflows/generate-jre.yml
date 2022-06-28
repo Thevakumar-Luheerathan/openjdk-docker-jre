@@ -1,12 +1,19 @@
-name: Generate and push jre11 to Dockerhub
+name: Generate and push jvm-runtime base image to Dockerhub
 
 on: 
   workflow_dispatch:
     inputs:
       replace_prev:
-        description: Replace previous tag.
+        description: Replace previous tag
         required: false
         type: string
+      sem-ver:
+        type: choice
+        description: sem-ver option to increase
+        options: 
+          - major
+          - minor
+          - patch
       is_patch:
         description: Update patch version
         required: false
@@ -40,7 +47,7 @@ jobs:
       
       - name: Generate new tag
         run: |
-          last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/jre11/tags/' | jq '."results"[0]["name"]') 
+          last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/ballerina/ballerina-jvm-runtime/tags/' | jq '."results"[0]["name"]') 
           if [ $last_tag == null ]; then
             last_tag="v0.0.0"
           fi
@@ -53,6 +60,16 @@ jobs:
           minor=${last_tag_array[3]}
           patch=${last_tag_array[5]}
           if [ -z ${{ inputs.replace_prev }} ] ; then
+            echo ${{ inputs.sem-ver }}
+            if [ ${{ inputs.sem-ver }} = "patch" ] ; then
+              echo "It is patch"
+            fi
+            if [ ${{ inputs.sem-ver }} = "major" ] ; then
+              echo "It is major"
+            fi
+            if [ ${{ inputs.sem-ver }} = "minor" ] ; then
+              echo "It is minor"
+            fi
             if [ ${{ inputs.is_patch }} = true ] ; then
               patch=$(($patch + 1))
             fi
@@ -72,12 +89,20 @@ jobs:
           echo ::set-output name=TAG::$tag
         id: tag-gen
         
-      - name: Build and push
+      - name: Build and push with latest
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./base-image/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:latest
+
+      - name: Build and push with tag
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/jre11:${{ steps.tag-gen.outputs.TAG }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
 
         

@@ -34,8 +34,9 @@ jobs:
       - name: Generate new tag
         run: |
           do_change_all=1
-          last_tag=$(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[1]["name"]') 
-          echo $last_tag
+          last_tag=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[]["name"]') ) 
+          IFS=$'\n' sorted_last_tag=($(sort <<<"${last_tag[*]}")); unset IFS  
+          last_tag=${sorted_last_tag[-2]}
           if [ $last_tag == null ]; then
             last_tag="0.0.0"
           elif [ `expr length "$last_tag"` -lt 6  ]; then
@@ -46,12 +47,7 @@ jobs:
           echo $last_tag
           
           last_tag_array=( $(grep -Eo '[0-9]+' <<<"$last_tag") ) 
-          # IFS='.'     
-          # read -ra last_tag_array <<< "$last_tag"   
-          # major="${last_tag_array[0]%\"}""
-          # minor=${last_tag_array[1]}
-          # patch="${last_tag_array[2]#\"}""
-          # IFS=' ' 
+
           major=${last_tag_array[0]}
           minor=${last_tag_array[1]}
           patch=${last_tag_array[2]}

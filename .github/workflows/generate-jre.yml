@@ -62,6 +62,7 @@ jobs:
             tag=${{ inputs.replace_prev }}
           fi
           echo ::set-output name=TAG::$tag
+          echo $tag
         id: tag-gen
         
       - name: Build and push with latest

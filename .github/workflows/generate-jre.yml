@@ -34,13 +34,13 @@ jobs:
       - name: Generate new tag
         run: |
           do_change_all=1
-          last_tag=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[]["name"]') ) 
-          echo "last tag is $last_tag"
-          if [ $last_tag == null ]; then
+          last_tags=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[]["name"]') ) 
+          echo "last tag is ${last_tags[*]}"
+          if [ -z "$last_tags" ]; then
             last_tag="0.0.0"
           else
-            IFS=$'\n' sorted_last_tag=($(sort <<<"${last_tag[*]}")); unset IFS  
-            last_tag=${sorted_last_tag[-2]}
+            IFS=$'\n' sorted_last_tags=($(sort <<<"${last_tags[*]}")); unset IFS  
+            last_tag=${sorted_last_tags[-2]}
           fi
 
           

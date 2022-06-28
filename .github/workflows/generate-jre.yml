@@ -44,10 +44,16 @@ jobs:
             do_change_all=0
           fi
           echo $last_tag
-          last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
-          major=${last_tag_array[1]}
-          minor=${last_tag_array[3]}
-          patch=${last_tag_array[5]}
+
+          IFS='.'     
+          read -ra last_tag_array <<< "$last_tag"   
+          major=${last_tag_array[0]}
+          minor=${last_tag_array[1]}
+          patch=${last_tag_array[2]}
+          IFS=' ' 
+
+          #last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
+
           if [ -z ${{ inputs.replace_prev }} ] ; then
             if [ ${{ inputs.sem-ver }} = "patch" ] ; then
               patch=$(($patch + 1))

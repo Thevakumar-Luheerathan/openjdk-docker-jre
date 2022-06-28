@@ -40,7 +40,7 @@ jobs:
           if [ `expr length "$last_tag"` -lt 6  ]; then
             last_tag="0.0.0"
           fi  
-          if [ ${{ inputs.replace_prev != "$last_tag"" }} ]
+          if [ ${{ inputs.replace_prev }} != "$last_tag"" ]
             do_change_all=0
           fi
           echo $last_tag

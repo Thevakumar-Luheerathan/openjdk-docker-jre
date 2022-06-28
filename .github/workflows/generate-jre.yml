@@ -10,6 +10,7 @@ on:
       sem-ver:
         type: choice
         description: sem-ver option to increase
+        required: false
         options: 
           - major
           - minor

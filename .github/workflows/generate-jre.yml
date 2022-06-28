@@ -44,13 +44,17 @@ jobs:
             do_change_all=0
           fi
           echo $last_tag
-
-          IFS='.'     
-          read -ra last_tag_array <<< "$last_tag"   
+          
+          last_tag_array=( $(grep -Eo '[0-9]+' <<<"$last_tag") ) 
+          # IFS='.'     
+          # read -ra last_tag_array <<< "$last_tag"   
+          # major="${last_tag_array[0]%\"}""
+          # minor=${last_tag_array[1]}
+          # patch="${last_tag_array[2]#\"}""
+          # IFS=' ' 
           major=${last_tag_array[0]}
           minor=${last_tag_array[1]}
           patch=${last_tag_array[2]}
-          IFS=' ' 
           echo $major
           echo $minor
           echo $patch

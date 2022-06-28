@@ -51,9 +51,10 @@ jobs:
           minor=${last_tag_array[1]}
           patch=${last_tag_array[2]}
           IFS=' ' 
-
-          #last_tag_array=( $(grep -Eo '[[:digit:]]+|[^[:digit:]]+' <<<"$last_tag") ) 
-
+          echo $major
+          echo $minor
+          echo $patch
+          
           if [ -z ${{ inputs.replace_prev }} ] ; then
             if [ ${{ inputs.sem-ver }} = "patch" ] ; then
               patch=$(($patch + 1))

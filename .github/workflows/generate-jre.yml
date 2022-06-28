@@ -35,16 +35,17 @@ jobs:
         run: |
           do_change_all=1
           last_tag=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[]["name"]') ) 
-          IFS=$'\n' sorted_last_tag=($(sort <<<"${last_tag[*]}")); unset IFS  
-          last_tag=${sorted_last_tag[-2]}
-          if [ $last_tag == null ]; then
+          if [ $last_tag != null ]; then
+            IFS=$'\n' sorted_last_tag=($(sort <<<"${last_tag[*]}")); unset IFS  
+            last_tag=${sorted_last_tag[-2]}
+          elif [ $last_tag == null ]; then
             last_tag="0.0.0"
-          elif [ `expr length "$last_tag"` -lt 6  ]; then
-            last_tag="0.0.0"
-          elif [ ${{ inputs.replace_prev }} != "$last_tag" ]; then
+          fi
+          if [ ${{ inputs.replace_prev }} != "$last_tag" ] && [ ${{ inputs.replace_prev }} != "" ]; then
             do_change_all=0
           fi
-          echo $last_tag
+          echo "Last tag is $last_tag"
+          echo "Update all tag is $do_all_change"
           
           last_tag_array=( $(grep -Eo '[0-9]+' <<<"$last_tag") ) 
 

@@ -7,7 +7,7 @@ on:
         description: Replace previous tag
         required: false
         type: string
-        default: "v"
+        default: ""
       sem-ver:
         type: choice
         description: sem-ver option to increase

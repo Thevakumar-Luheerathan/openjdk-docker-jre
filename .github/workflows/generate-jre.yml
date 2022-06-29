@@ -68,6 +68,8 @@ jobs:
             minor=${curr_tag_array[1]}
             patch=${curr_tag_array[2]}
 
+            echo "Curr tag $major$minor$patch"
+
             for (( i=1; i<${#formatted_tags[@]}; i++ ))
             do 
               prev_tag=${formatted_tags[$i-1]}
@@ -76,7 +78,7 @@ jobs:
               prev_minor=${prev_tag_array[1]}
               prev_patch=${prev_tag_array[2]}
 
-              echo "prev tag - - $prev_major$prev_minor$prev_patch"
+            
 
             
               next_tag=${formatted_tags[$i]}
@@ -85,7 +87,7 @@ jobs:
               next_minor=${next_tag_array[1]}
               next_patch=${next_tag_array[2]}
 
-              echo "next tag - - $next_major$next_minor$next_patch"
+             
 
 
               if [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && [ $patch -eq $prev_patch ] ; then

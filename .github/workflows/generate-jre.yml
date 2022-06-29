@@ -48,12 +48,13 @@ jobs:
 
             for tag_i in ${sorted_last_tags[@]}; do
               if [ $(($(echo "$tag_i" | awk -F. '{ print NF - 1 }') == 3)) ]; then
+                 echo "Formatted single tag is $tag_i"
                 formatted_tags+=( $tag_i )
               fi
             done
           fi
 
-          echo "Formatted tags is $formatted_tags"
+          echo "Formatted tags are $formatted_tags"
 
           last_tag_array=( $(grep -Eo '[0-9]+' <<<"$last_tag") ) 
           major=${last_tag_array[0]}

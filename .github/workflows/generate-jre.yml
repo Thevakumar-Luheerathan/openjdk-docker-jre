@@ -48,7 +48,7 @@ jobs:
 
             for tag_i in ${sorted_last_tags[@]}; do
               echo "Formatted single tag is $tag_i  $(echo "$tag_i" | awk -F. '{ print NF - 1 }')"
-              if [ $(($(echo "$tag_i" | awk -F. '{ print NF - 1 }') == 3)) ]; then
+              if [ $(($(echo "$tag_i" | awk -F. '{ print NF - 1 }') == 2)) ]; then
                 formatted_tags+=( $tag_i )
               fi
             done

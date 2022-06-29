@@ -81,9 +81,9 @@ jobs:
             
               next_tag=${formatted_tags[$i]}
               next_tag_array=( $(grep -Eo '[0-9]+' <<<"$next_tag") ) 
-              next_major=${prev_tag_array[0]}
-              next_minor=${prev_tag_array[1]}
-              next_patch=${prev_tag_array[2]}
+              next_major=${next_tag_array[0]}
+              next_minor=${next_tag_array[1]}
+              next_patch=${next_tag_array[2]}
 
               echo "next tag - - $next_major$next_minor$next_patch"
 

@@ -54,7 +54,7 @@ jobs:
             done
           fi
 
-          echo "Formatted tags are $formatted_tags"
+          echo "Formatted tags are $formatted_tags[@]"
 
           last_tag_array=( $(grep -Eo '[0-9]+' <<<"$last_tag") ) 
           major=${last_tag_array[0]}

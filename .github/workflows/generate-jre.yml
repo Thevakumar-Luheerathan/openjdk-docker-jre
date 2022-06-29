@@ -38,7 +38,18 @@ jobs:
           do_change_major=1
           do_change_major_minor=1
           formatted_tags=()
-          last_tags=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/' | jq '."results"[]["name"]') ) 
+          last_tags=()
+          i=1
+          while :
+          do
+              retrieved_tags=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/?page='$i'&page_size=100' | jq '."results"[]["name"]') )
+              last_tags=( ${last_tags[@]} ${retrieved_tags[@]} )
+              if [ ${#retrieved_tags[@]} -lt 99 ] ; then
+                  break
+              fi
+              i=$(($i +1))
+              
+          done
           echo "last tag is ${last_tags[*]}"
           if [ -z "$last_tags" ]; then
             last_tag="0.0.0"

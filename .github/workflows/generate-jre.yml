@@ -62,7 +62,6 @@ jobs:
           patch=${last_tag_array[2]}
           
           if [ ${{ inputs.replace_prev }} != "" ]; then
-            echo "Inside **"
             curr_tag=${{ inputs.replace_prev }}
             curr_tag_array=( $(grep -Eo '[0-9]+' <<<"$curr_tag") ) 
             major=${curr_tag_array[0]}
@@ -71,6 +70,7 @@ jobs:
 
             for (( i=1; i<${#formatted_tags[@]}; i++ ))
             do 
+              echo "Inside loop **"
               prev_tag=${formatted_tags[$i-1]}
               prev_tag_array=( $(grep -Eo '[0-9]+' <<<"$prev_tag") ) 
               prev_major=${prev_tag_array[0]}

@@ -85,7 +85,7 @@ jobs:
               next_minor=${prev_tag_array[1]}
               next_patch=${prev_tag_array[2]}
 
-              echo "prev tag - - $next_major$next_minor$next_patch"
+              echo "next tag - - $next_major$next_minor$next_patch"
 
 
               if [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && [ $patch -eq $prev_patch ] ; then

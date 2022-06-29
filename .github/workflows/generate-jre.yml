@@ -98,11 +98,16 @@ jobs:
                   do_change_major_minor=0
                 fi
 
-              elif [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && [ $(("$patch" >= "$prev_patch")) == 1 ] ; then
+              elif [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] ; then
+                echo " I am in 2-0nd if $prev_major$prev_minor$prev_patch $major$minor$patch $(("$patch" >= "$prev_patch"))"
                 if [ $major -le $next_major ] && [ $minor -lt $next_minor ] ; then
-                  do_change_latest=0
-                  do_change_major=0
-                  do_change_major_minor=1
+                  echo " I am in 2-1nd if $prev_major$prev_minor$prev_patch $major$minor$patch $(("$patch" >= "$prev_patch"))"
+                  if [ $(("$patch" >= "$prev_patch")) == 1 ] ; then
+                    echo " I am in 2-2nd if $prev_major$prev_minor$prev_patch $major$minor$patch $(("$patch" >= "$prev_patch"))"
+                    do_change_latest=0
+                    do_change_major=0
+                    do_change_major_minor=1
+                  fi
                 fi
               elif [ $major -eq $prev_major ] && [ $minor -ge $prev_minor ] && [ $next_major -gt $major ] ; then
                   do_change_latest=0

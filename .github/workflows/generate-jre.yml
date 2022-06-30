@@ -140,10 +140,7 @@ jobs:
         id: tag-gen
         
       - name: Build and push only major.minor.patch tag
-        if: > 
-          ${{ (steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 0) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 0) }}
+        if: ${{ (steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 0) && (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 0) }}
         uses: docker/build-push-action@v2
         with:
           context: .

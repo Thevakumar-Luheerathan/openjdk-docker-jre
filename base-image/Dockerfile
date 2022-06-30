@@ -78,7 +78,8 @@ RUN set -eux; \
     tar -xf /tmp/openjdk.tar.gz --strip-components=1; \
     apk del --purge .fetch-deps; \
     rm -rf /var/cache/apk/*; \
-    rm -rf /tmp/openjdk.tar.gz;
+    rm -rf /tmp/openjdk.tar.gz;\
+    echo "v1.1.0"
 
 
     

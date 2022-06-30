@@ -167,8 +167,3 @@ jobs:
           file: ./base-image/Dockerfile
           push: true
           tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
-
-
-
-
-

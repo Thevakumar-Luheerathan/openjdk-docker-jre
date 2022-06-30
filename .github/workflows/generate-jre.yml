@@ -4,19 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       replace_prev:
-        description: Replace previous tag
+        description: Update previous version of semver
         required: false
         type: string
         default: ""
       sem-ver:
         type: choice
-        description: sem-ver option to increase
+        description: Update latest version of semver
         required: false
         options: 
           - patch
           - minor
           - major
-
 
 jobs:
   build-jre-docker:
@@ -24,11 +23,13 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
+
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          username: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.BAL_DOCKER_HUB_ACCESS_TOKEN }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
@@ -44,13 +45,12 @@ jobs:
           do
               retrieved_tags=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/?page='$i'&page_size=100' | jq '."results"[]["name"]') )
               last_tags=( ${last_tags[@]} ${retrieved_tags[@]} )
-              if [ ${#retrieved_tags[@]} -lt 99 ] ; then
+              if [ ${#retrieved_tags[@]} -lt 100 ] ; then
                   break
               fi
-              i=$(($i +1))
-              
+              i=$(($i +1))    
           done
-          echo "last tag is ${last_tags[*]}"
+
           if [ -z "$last_tags" ]; then
             last_tag="0.0.0"
           else
@@ -58,14 +58,11 @@ jobs:
             last_tag=${sorted_last_tags[-2]}
 
             for tag_i in ${sorted_last_tags[@]}; do
-              echo "Formatted single tag is $tag_i  $(echo "$tag_i" | awk -F. '{ print NF - 1 }')"
               if [ $(($(echo "$tag_i" | awk -F. '{ print NF - 1 }') == 2)) -eq 1 ]; then
                 formatted_tags=( ${formatted_tags[@]} $tag_i )
               fi
             done
           fi
-
-          echo "Formatted tags are ${formatted_tags[@]}"
 
           last_tag_array=( $(grep -Eo '[0-9]+' <<<"$last_tag") ) 
           major=${last_tag_array[0]}
@@ -79,8 +76,6 @@ jobs:
             minor=${curr_tag_array[1]}
             patch=${curr_tag_array[2]}
 
-            
-
             for (( i=1; i<${#formatted_tags[@]}; i++ ))
             do 
               prev_tag=${formatted_tags[$i-1]}
@@ -89,17 +84,11 @@ jobs:
               prev_minor=${prev_tag_array[1]}
               prev_patch=${prev_tag_array[2]}
 
-            
-
-            
               next_tag=${formatted_tags[$i]}
               next_tag_array=( $(grep -Eo '[0-9]+' <<<"$next_tag") ) 
               next_major=${next_tag_array[0]}
               next_minor=${next_tag_array[1]}
               next_patch=${next_tag_array[2]}
-
-             
-
 
               if [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && [ $patch -eq $prev_patch ] && [ $major -eq $next_major ] && [ $minor -eq $next_minor ] && [ $patch -eq $(($next_patch - 1)) ] ; then
                   do_change_latest=0
@@ -115,31 +104,9 @@ jobs:
                   do_change_latest=0
                   do_change_major=1
                   do_change_major_minor=1
-              # elif [ $major -gt $prev_major ] && [ $i -eq ${#formatted_tags[@]} ]; then
-              #     do_change_latest=1
-              #     do_change_major=1
-              #     do_change_major_minor=1
-              # elif [ $major -eq $prev_major ] && [ $minor -gt $prev_minor ] && [ $i -eq ${#formatted_tags[@]} ]; then
-              #     do_change_latest=1
-              #     do_change_major=1
-              #     do_change_major_minor=1
-              # elif [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && [ $patch -gt $prev_patch ] && [ $i -eq ${#formatted_tags[@]} ]; then
-              #     do_change_latest=1
-              #     do_change_major=1
-              #     do_change_major_minor=1
               fi
             done
-
-
-            # do_change_latest=0
-            # do_change_major=0
-            # do_change_major_minor=0
           fi
-          echo "Last tag is $last_tag"
-
-          echo $major
-          echo $minor
-          echo $patch
           
           if [ -z ${{ inputs.replace_prev }} ] ; then
             if [ ${{ inputs.sem-ver }} = "patch" ] ; then
@@ -157,10 +124,6 @@ jobs:
             tag="$major.$minor.$patch"
             maj_min_tag="$major.$minor"
             maj_tag="$major"
-          else
-            tag="$major.$minor.$patch"
-            maj_min_tag="$major.$minor"
-            maj_tag="$major"
           fi
           echo ::set-output name=TAG::$tag
           echo ::set-output name=MAJ_MIN_TAG::$maj_min_tag
@@ -168,8 +131,6 @@ jobs:
           echo ::set-output name=DO_CHANGE_LATEST::$do_change_latest
           echo ::set-output name=DO_CHANGE_MAJOR::$do_change_major
           echo ::set-output name=DO_CHANGE_MAJOR_MINOR::$do_change_major_minor
-
-          echo $tag
         id: tag-gen
         
       - name: Build and push latest image
@@ -179,7 +140,7 @@ jobs:
           context: .
           file: ./base-image/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:latest
+          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:latest
 
       - name: Build and push latest major
         if: ${{ steps.tag-gen.outputs.DO_CHANGE_MAJOR == 1 }}
@@ -188,7 +149,7 @@ jobs:
           context: .
           file: ./base-image/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
+          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
 
       - name: Build and push latest major.minor
         if: ${{ steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1 }}
@@ -197,7 +158,7 @@ jobs:
           context: .
           file: ./base-image/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
+          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
 
       - name: Build and push latest major.minor.patch
         uses: docker/build-push-action@v2
@@ -205,7 +166,7 @@ jobs:
           context: .
           file: ./base-image/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
+          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
 
 
 

@@ -130,21 +130,23 @@ jobs:
           echo "$do_change_latest"
           echo "$do_change_major"
           echo "$do_change_major_minor"
+          generate_only_one_tag=$(($do_change_latest==0 && $do_change_major==0 && $do_change_major_minor==0))
+          generate_only_two_tag=$(($do_change_latest==0 && $do_change_major==0 && $do_change_major_minor==1))
+          generate_only_three_tag=$(($do_change_latest==0 && $do_change_major==1 && $do_change_major_minor==1))
+          generate_only_four_tag=$(($do_change_latest==1 && $do_change_major==1 && $do_change_major_minor==1))
 
           echo ::set-output name=TAG::$tag
           echo ::set-output name=MAJ_MIN_TAG::$maj_min_tag
           echo ::set-output name=MAJ_TAG::$maj_tag
-          echo ::set-output name=DO_CHANGE_LATEST::$do_change_latest
-          echo ::set-output name=DO_CHANGE_MAJOR::$do_change_major
-          echo ::set-output name=DO_CHANGE_MAJOR_MINOR::$do_change_major_minor
+
+          echo ::set-output name=GENERATE_ONLY_ONE_TAG::$generate_only_one_tag
+          echo ::set-output name=GENERATE_ONLY_TWO_TAG::$generate_only_two_tag
+          echo ::set-output name=GENERATE_ONLY_THREE_TAG::$generate_only_three_tag
+          echo ::set-output name=GENERATE_ONLY_FOUR_TAG::$generate_only_four_tag
         id: tag-gen
         
       - name: Build and push only major.minor.patch tag
-        if: > 
-          ${{ ((steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 0) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 0)) == 1 }}
-        uses: docker/build-push-action@v2
+        if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_ONE_TAG == 1 }}
         with:
           context: .
           file: ./base-image/Dockerfile
@@ -152,11 +154,7 @@ jobs:
           tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
 
       - name: Build and push latest only major.minor.patch, major.minor
-        if: > 
-          ${{ ((steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 0) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1)) == 1  }}
-        uses: docker/build-push-action@v2
+        if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_TWO_TAG == 1 }}
         with:
           context: .
           file: ./base-image/Dockerfile
@@ -166,11 +164,7 @@ jobs:
             ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
 
       - name: Build and push latest only major.minor.patch, major.minor, major
-        if: > 
-          ${{ ((steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 1) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1)) == 1  }}
-        uses: docker/build-push-action@v2
+        if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_THREE_TAG == 1 }}
         with:
           context: .
           file: ./base-image/Dockerfile
@@ -181,10 +175,7 @@ jobs:
             ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
 
       - name: Build and push latest only major.minor.patch, major.minor, major, latest
-        if: > 
-          ${{ ((steps.tag-gen.outputs.DO_CHANGE_LATEST == 1) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 1) && 
-          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1)) == 1 }}
+        if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_four_TAG == 1 }}
         uses: docker/build-push-action@v2
         with:
           context: .

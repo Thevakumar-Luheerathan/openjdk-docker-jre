@@ -147,6 +147,7 @@ jobs:
         
       - name: Build and push only major.minor.patch tag
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_ONE_TAG == 1 }}
+        uses: docker/build-push-action@v2
         with:
           context: .
           file: ./base-image/Dockerfile
@@ -155,6 +156,7 @@ jobs:
 
       - name: Build and push latest only major.minor.patch, major.minor
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_TWO_TAG == 1 }}
+        uses: docker/build-push-action@v2
         with:
           context: .
           file: ./base-image/Dockerfile
@@ -165,6 +167,7 @@ jobs:
 
       - name: Build and push latest only major.minor.patch, major.minor, major
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_THREE_TAG == 1 }}
+        uses: docker/build-push-action@v2
         with:
           context: .
           file: ./base-image/Dockerfile

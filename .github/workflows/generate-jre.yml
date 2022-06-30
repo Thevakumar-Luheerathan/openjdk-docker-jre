@@ -121,10 +121,10 @@ jobs:
               minor=0
               patch=0
             fi
-            tag="$major.$minor.$patch"
-            maj_min_tag="$major.$minor"
-            maj_tag="$major"
           fi
+          tag="$major.$minor.$patch"
+          maj_min_tag="$major.$minor"
+          maj_tag="$major"
           echo ::set-output name=TAG::$tag
           echo ::set-output name=MAJ_MIN_TAG::$maj_min_tag
           echo ::set-output name=MAJ_TAG::$maj_tag

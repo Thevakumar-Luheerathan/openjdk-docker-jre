@@ -179,7 +179,7 @@ jobs:
             ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
 
       - name: Build and push latest only major.minor.patch, major.minor, major, latest
-        if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_four_TAG == 1 }}
+        if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_FOUR_TAG == 1 }}
         uses: docker/build-push-action@v2
         with:
           context: .

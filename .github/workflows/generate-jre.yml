@@ -125,6 +125,12 @@ jobs:
           tag="$major.$minor.$patch"
           maj_min_tag="$major.$minor"
           maj_tag="$major"
+
+          echo "Tag changes"
+          echo "$do_change_latest"
+          echo "$do_change_major"
+          echo "$do_change_major_minor"
+
           echo ::set-output name=TAG::$tag
           echo ::set-output name=MAJ_MIN_TAG::$maj_min_tag
           echo ::set-output name=MAJ_TAG::$maj_tag

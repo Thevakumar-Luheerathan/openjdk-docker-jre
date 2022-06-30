@@ -79,7 +79,7 @@ RUN set -eux; \
     apk del --purge .fetch-deps; \
     rm -rf /var/cache/apk/*; \
     rm -rf /tmp/openjdk.tar.gz;\
-    echo "v1.0.0"
+    echo "v1.2.0"
 
 
     

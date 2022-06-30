@@ -133,37 +133,59 @@ jobs:
           echo ::set-output name=DO_CHANGE_MAJOR_MINOR::$do_change_major_minor
         id: tag-gen
         
-      - name: Build and push latest image
-        if: ${{ steps.tag-gen.outputs.DO_CHANGE_LATEST == 1 }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./base-image/Dockerfile
-          push: true
-          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:latest
-
-      - name: Build and push latest major
-        if: ${{ steps.tag-gen.outputs.DO_CHANGE_MAJOR == 1 }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./base-image/Dockerfile
-          push: true
-          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
-
-      - name: Build and push latest major.minor
-        if: ${{ steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1 }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./base-image/Dockerfile
-          push: true
-          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
-
-      - name: Build and push latest major.minor.patch
+      - name: Build and push only major.minor.patch tag
+        if: > 
+          ${{ (steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 0) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 0) }}
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./base-image/Dockerfile
           push: true
           tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
+
+      - name: Build and push latest only major.minor.patch, major.minor
+        if: > 
+          ${{ (steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 0) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1) }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./base-image/Dockerfile
+          push: true
+          tags: >
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }} , 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
+
+      - name: Build and push latest only major.minor.patch, major.minor, major
+        if: > 
+          ${{ (steps.tag-gen.outputs.DO_CHANGE_LATEST == 0) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 1) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1) }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./base-image/Dockerfile
+          push: true
+          tags: >
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }} , 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }} , 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
+
+      - name: Build and push latest only major.minor.patch, major.minor, major, latest
+        if: > 
+          ${{ (steps.tag-gen.outputs.DO_CHANGE_LATEST == 1) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR == 1) && 
+          (steps.tag-gen.outputs.DO_CHANGE_MAJOR_MINOR == 1) }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./base-image/Dockerfile
+          push: true
+          tags: > 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}, 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}, 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}, 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:latest

@@ -90,20 +90,25 @@ jobs:
               next_minor=${next_tag_array[1]}
               next_patch=${next_tag_array[2]}
 
-              if [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && [ $patch -eq $prev_patch ] && [ $major -eq $next_major ] && [ $minor -eq $next_minor ] && [ $patch -eq $(($next_patch - 1)) ] ; then
-                  do_change_latest=0
-                  do_change_major=0
-                  do_change_major_minor=0
+              if [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && 
+                 [ $patch -eq $prev_patch ] && [ $major -eq $next_major ] && 
+                 [ $minor -eq $next_minor ] && [ $patch -eq $(($next_patch - 1)) ] ; then
+                    do_change_latest=0
+                    do_change_major=0
+                    do_change_major_minor=0
     
-              elif [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && [ $(("$patch" >= "$prev_patch")) = 1 ] && [ $major -le $next_major ] && [ $minor -lt $next_minor ]; then
-                  do_change_latest=0
-                  do_change_major=0
-                  do_change_major_minor=1
+              elif [ $major -eq $prev_major ] && [ $minor -eq $prev_minor ] && 
+                   [ $(("$patch" >= "$prev_patch")) = 1 ] && [ $major -le $next_major ] && 
+                   [ $minor -lt $next_minor ]; then
+                      do_change_latest=0
+                      do_change_major=0
+                      do_change_major_minor=1
 
-              elif [ $major -eq $prev_major ] && [ $minor -ge $prev_minor ] && [ $next_major -gt $major ] ; then
-                  do_change_latest=0
-                  do_change_major=1
-                  do_change_major_minor=1
+              elif [ $major -eq $prev_major ] && [ $minor -ge $prev_minor ] && 
+                   [ $next_major -gt $major ] ; then
+                      do_change_latest=0
+                      do_change_major=1
+                      do_change_major_minor=1
               fi
             done
           fi
@@ -126,10 +131,6 @@ jobs:
           maj_min_tag="$major.$minor"
           maj_tag="$major"
 
-          echo "Tag changes"
-          echo "$do_change_latest"
-          echo "$do_change_major"
-          echo "$do_change_major_minor"
           generate_only_one_tag=$(($do_change_latest==0 && $do_change_major==0 && $do_change_major_minor==0))
           generate_only_two_tag=$(($do_change_latest==0 && $do_change_major==0 && $do_change_major_minor==1))
           generate_only_three_tag=$(($do_change_latest==0 && $do_change_major==1 && $do_change_major_minor==1))

@@ -74,7 +74,7 @@ jobs:
           minor=${last_tag_array[1]}
           patch=${last_tag_array[2]}
           
-          if [ ${{ inputs.replace_prev }} != "" ] && [ ${{ inputs.sem-ver }} = "Existing" ]; then
+          if [ "${{ inputs.replace_prev }}" != "" ] && [ ${{ inputs.sem-ver }} = "Existing" ]; then
             curr_tag=${{ inputs.replace_prev }}
             curr_tag_array=( $(grep -Eo '[0-9]+' <<<"$curr_tag") ) 
             major=${curr_tag_array[0]}

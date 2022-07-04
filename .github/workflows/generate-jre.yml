@@ -49,13 +49,13 @@ jobs:
           while :
           do
               retrieved_tags=( $(curl -s -S 'https://hub.docker.com/v2/repositories/'$username'/jvm-runtime/tags/?page='$i'&page_size=100' | jq '."results"[]["name"]') )
-              echo 'https://hub.docker.com/v2/repositories/'$username'/jvm-runtime/tags/?page='$i'&page_size=100'
               last_tags=( ${last_tags[@]} ${retrieved_tags[@]} )
               if [ ${#retrieved_tags[@]} -lt 100 ] ; then
                   break
               fi
               i=$(($i +1))    
           done
+          echo "-------- ${last_tags[@]} ------"
 
           if [ -z "$last_tags" ]; then
             last_tag="0.0.0"
@@ -134,7 +134,7 @@ jobs:
             fi
           fi
           if [ -z ${{ inputs.replace_prev }} ] && [ ${{ inputs.sem-ver }} = "None" ]; then
-            echo "Inputs are not given properly."
+            echo "Inputs are not given properly"
             exit 1
           fi
           tag="$major.$minor.$patch"

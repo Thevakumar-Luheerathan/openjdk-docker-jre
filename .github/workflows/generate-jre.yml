@@ -55,7 +55,6 @@ jobs:
               fi
               i=$(($i +1))    
           done
-          echo "-------- ${last_tags[@]} ------"
 
           if [ -z "$last_tags" ]; then
             last_tag="0.0.0"

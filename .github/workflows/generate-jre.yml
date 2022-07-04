@@ -3,19 +3,23 @@ name: Generate and push jvm-runtime base image to Dockerhub
 on: 
   workflow_dispatch:
     inputs:
-      replace_prev:
-        description: Update previous version of semver
-        required: false
-        type: string
-        default: ""
       sem-ver:
         type: choice
-        description: Update latest version of semver
+        description: Version bump 
         required: false
+        default: None
         options: 
+          - Existing
           - patch
           - minor
           - major
+          - None
+      replace_prev:
+        description: Version bump (Use only for updating existing version)
+        required: false
+        type: string
+        default: ""
+      
 
 jobs:
   build-jre-docker:
@@ -35,6 +39,7 @@ jobs:
       
       - name: Generate new tag
         run: |
+          username=${{ secrets.BAL_DOCKER_HUB_USERNAME }}
           do_change_latest=1
           do_change_major=1
           do_change_major_minor=1
@@ -43,7 +48,7 @@ jobs:
           i=1
           while :
           do
-              retrieved_tags=( $(curl -s -S 'https://registry.hub.docker.com/v2/repositories/luheerathan/ballerina-jvm-runtime/tags/?page='$i'&page_size=100' | jq '."results"[]["name"]') )
+              retrieved_tags=( $(curl -s -S 'https://hub.docker.com/v2/repositories/'$username'/jvm-runtime/tags/?page='$i'&page_size=100' | jq '."results"[]["name"]') )
               last_tags=( ${last_tags[@]} ${retrieved_tags[@]} )
               if [ ${#retrieved_tags[@]} -lt 100 ] ; then
                   break
@@ -69,7 +74,7 @@ jobs:
           minor=${last_tag_array[1]}
           patch=${last_tag_array[2]}
           
-          if [ ${{ inputs.replace_prev }} != "" ]; then
+          if [ ${{ inputs.replace_prev }} != "" ] && [ ${{ inputs.sem-ver }} = "Existing" ]; then
             curr_tag=${{ inputs.replace_prev }}
             curr_tag_array=( $(grep -Eo '[0-9]+' <<<"$curr_tag") ) 
             major=${curr_tag_array[0]}
@@ -113,7 +118,7 @@ jobs:
             done
           fi
           
-          if [ -z ${{ inputs.replace_prev }} ] ; then
+          if [ -z ${{ inputs.replace_prev }} ] && [ ${{ inputs.sem-ver }} != "None" ]; then
             if [ ${{ inputs.sem-ver }} = "patch" ] ; then
               patch=$(($patch + 1))
             fi
@@ -126,6 +131,9 @@ jobs:
               minor=0
               patch=0
             fi
+          fi
+          if [ -z ${{ inputs.replace_prev }} ] && [ ${{ inputs.sem-ver }} != "None" ]; then
+            exit 1
           fi
           tag="$major.$minor.$patch"
           maj_min_tag="$major.$minor"
@@ -153,7 +161,7 @@ jobs:
           context: .
           file: ./base-image/Dockerfile
           push: true
-          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
+          tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
 
       - name: Build and push latest only major.minor.patch, major.minor
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_TWO_TAG == 1 }}
@@ -163,8 +171,8 @@ jobs:
           file: ./base-image/Dockerfile
           push: true
           tags: >
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }} , 
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }} , 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
 
       - name: Build and push latest only major.minor.patch, major.minor, major
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_THREE_TAG == 1 }}
@@ -174,9 +182,9 @@ jobs:
           file: ./base-image/Dockerfile
           push: true
           tags: >
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }} , 
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }} , 
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }} , 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }} , 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
 
       - name: Build and push latest only major.minor.patch, major.minor, major, latest
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_FOUR_TAG == 1 }}
@@ -186,7 +194,7 @@ jobs:
           file: ./base-image/Dockerfile
           push: true
           tags: > 
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.TAG }}, 
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}, 
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}, 
-            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/ballerina-jvm-runtime:latest
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }}, 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}, 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}, 
+            ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:latest

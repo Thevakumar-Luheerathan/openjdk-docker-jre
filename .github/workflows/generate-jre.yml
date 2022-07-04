@@ -49,6 +49,7 @@ jobs:
           while :
           do
               retrieved_tags=( $(curl -s -S 'https://hub.docker.com/v2/repositories/'$username'/jvm-runtime/tags/?page='$i'&page_size=100' | jq '."results"[]["name"]') )
+              echo 'https://hub.docker.com/v2/repositories/'$username'/jvm-runtime/tags/?page='$i'&page_size=100'
               last_tags=( ${last_tags[@]} ${retrieved_tags[@]} )
               if [ ${#retrieved_tags[@]} -lt 100 ] ; then
                   break

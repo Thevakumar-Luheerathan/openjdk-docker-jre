@@ -117,6 +117,10 @@ jobs:
               fi
             done
           fi
+          if [ "${{ inputs.replace_prev }}" = "" ] && [ ${{ inputs.sem-ver }} = "Existing" ]; then
+            echo "Inputs are not given properly"
+            exit 1
+          fi
           
           if [ -z ${{ inputs.replace_prev }} ] && [ ${{ inputs.sem-ver }} != "None" ]; then
             if [ ${{ inputs.sem-ver }} = "patch" ] ; then

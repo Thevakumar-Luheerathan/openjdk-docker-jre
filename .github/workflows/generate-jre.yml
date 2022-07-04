@@ -168,7 +168,7 @@ jobs:
           push: true
           tags: ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }}
 
-      - name: Build and push latest only major.minor.patch, major.minor
+      - name: Build and push only major.minor.patch, major.minor
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_TWO_TAG == 1 }}
         uses: docker/build-push-action@v2
         with:
@@ -179,7 +179,7 @@ jobs:
             ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }} , 
             ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}
 
-      - name: Build and push latest only major.minor.patch, major.minor, major
+      - name: Build and push only major.minor.patch, major.minor, major
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_THREE_TAG == 1 }}
         uses: docker/build-push-action@v2
         with:
@@ -191,7 +191,7 @@ jobs:
             ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }} , 
             ${{ secrets.BAL_DOCKER_HUB_USERNAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}
 
-      - name: Build and push latest only major.minor.patch, major.minor, major, latest
+      - name: Build and push only major.minor.patch, major.minor, major, latest
         if: ${{ steps.tag-gen.outputs.GENERATE_ONLY_FOUR_TAG == 1 }}
         uses: docker/build-push-action@v2
         with:

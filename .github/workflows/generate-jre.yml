@@ -133,6 +133,7 @@ jobs:
             fi
           fi
           if [ -z ${{ inputs.replace_prev }} ] && [ ${{ inputs.sem-ver }} = "None" ]; then
+            echo "Inputs are not given properly."
             exit 1
           fi
           tag="$major.$minor.$patch"

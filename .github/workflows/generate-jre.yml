@@ -132,7 +132,7 @@ jobs:
               patch=0
             fi
           fi
-          if [ -z ${{ inputs.replace_prev }} ] && [ ${{ inputs.sem-ver }} != "None" ]; then
+          if [ -z ${{ inputs.replace_prev }} ] && [ ${{ inputs.sem-ver }} = "None" ]; then
             exit 1
           fi
           tag="$major.$minor.$patch"

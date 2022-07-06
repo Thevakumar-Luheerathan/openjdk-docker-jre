@@ -7,7 +7,7 @@ on:
         type: choice
         description: Version Bump Type
         required: false
-        default: None
+        default: none
         options:
           - existing
           - patch
@@ -39,7 +39,7 @@ jobs:
 
       - name: Generate new tag
         run: |
-          $docker_hub_name="luheerathan"
+          docker_hub_name="luheerathan"
           do_change_latest=1
           do_change_major=1
           do_change_major_minor=1

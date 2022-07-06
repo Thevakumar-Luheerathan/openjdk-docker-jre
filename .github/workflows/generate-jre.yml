@@ -201,7 +201,7 @@ jobs:
           file: ./base-image/Dockerfile
           push: true
           tags: >
-            ${{ ssteps.tag-gen.outputs.DOCKER_HUB_NAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }}, 
+            ${{ steps.tag-gen.outputs.DOCKER_HUB_NAME }}/jvm-runtime:${{ steps.tag-gen.outputs.TAG }}, 
             ${{ steps.tag-gen.outputs.DOCKER_HUB_NAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_MIN_TAG }}, 
             ${{ steps.tag-gen.outputs.DOCKER_HUB_NAME }}/jvm-runtime:${{ steps.tag-gen.outputs.MAJ_TAG}}, 
             ${{ steps.tag-gen.outputs.DOCKER_HUB_NAME }}/jvm-runtime:latest
